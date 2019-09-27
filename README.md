@@ -2,7 +2,7 @@
 
 ## Getting started
 
-`$ npm install react-native-alipay --save`
+`$ npm install https://github.com/jinyaoye23/react-native-alipay.git --save`
 
 ### Mostly automatic installation
 
@@ -17,6 +17,8 @@
 2. Go to `node_modules` ➜ `react-native-alipay` and add `AlipayModule.xcodeproj`
 3. In XCode, in the project navigator, select your project. Add `libAlipayModule.a` to your project's `Build Phases` ➜ `Link Binary With Libraries`
 4. Run your project (`Cmd+R`)<
+
+[支付宝iOS集成文档](https://docs.open.alipay.com/204/105295/)
 
 #### Android
 
