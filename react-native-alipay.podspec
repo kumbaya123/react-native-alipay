@@ -18,8 +18,11 @@ Pod::Spec.new do |s|
 
   s.source_files = "ios/**/*.{h,m,swift}"
   s.requires_arc = true
+  s.frameworks = "SystemConfiguration", "CoreTelephony", "QuartzCore", "CoreText", "CoreGraphics", "UIKit", "Foundation", "CFNetwork", "CoreMotion"
+  s.library = "c++", "z"
 
   s.dependency "React"
+  pos.dependencyd 'AlipaySDK-iOS'
 	
   # s.dependency "..."
 end
