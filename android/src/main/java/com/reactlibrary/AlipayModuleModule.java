@@ -71,7 +71,7 @@ public class AlipayModuleModule extends ReactContextBaseJavaModule {
     }
 
     @SuppressLint("HandlerLeak")
-    private Handler mHandler = new Handler() {
+    private Handler mHandler = new Handler(getReactApplicationContext().getMainLooper()) {
         @SuppressWarnings("unused")
         public void handleMessage(Message msg) {
             switch (msg.what) {
