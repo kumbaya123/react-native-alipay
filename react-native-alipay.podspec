@@ -22,7 +22,7 @@ Pod::Spec.new do |s|
   s.library = "c++", "z"
 
   s.dependency "React"
-  pos.dependencyd 'AlipaySDK-iOS'
+  pos.dependency 'AlipaySDK-iOS'
 	
   # s.dependency "..."
 end
