@@ -1,4 +1,4 @@
-package com.reactlibrary;
+package com.alipay;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -21,7 +21,7 @@ import com.facebook.react.bridge.Callback;
 import java.util.Map;
 
 
-public class AlipayModuleModule extends ReactContextBaseJavaModule {
+public class AlipayModule extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     /**
@@ -54,7 +54,7 @@ public class AlipayModuleModule extends ReactContextBaseJavaModule {
     private static final int SDK_PAY_FLAG = 1;
     private static final int SDK_AUTH_FLAG = 2;
 
-    public AlipayModuleModule(ReactApplicationContext reactContext) {
+    public AlipayModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
     }

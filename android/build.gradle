@@ -32,7 +32,7 @@ android {
 //    }
 //}
 dependencies {
-    compile "com.facebook.react:react-native:+"
-//    compile fileTree(dir: "libs", include: ["*.aar"])
-    compile(name: 'alipaySdk-15.6.5-20190718211159-noUtdid', ext: 'aar')
+    implementation "com.facebook.react:react-native:+"
+    implementation fileTree(dir: "libs", include: ["*.aar"])
+//    compile(name: 'alipaySdk-15.6.5-20190718211159-noUtdid', ext: 'aar')
 }
