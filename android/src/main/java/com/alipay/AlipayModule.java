@@ -149,7 +149,7 @@ public class AlipayModule extends ReactContextBaseJavaModule {
                     if (TextUtils.equals(resultStatus, "9000")) {
                         promise.resolve(resultInfo);
                     } else {
-                        promise.reject(resultInfo);
+                        promise.reject(result.toString());
                     }
                 }catch(Exception e){
                     promise.reject(e);

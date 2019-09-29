@@ -1,4 +1,4 @@
-import { NativeModules } from 'react-native';
+import { NativeModules,Platform } from 'react-native';
 // import { resolve } from 'dns';
 
 const AlipayModul = NativeModules.AlipayModule;
@@ -15,20 +15,18 @@ export default class AlipayModule {
         if (Platform.OS === 'ios') {
           resultDic = data[0];
         } else {
-          resultDic = data;
+          let dataJson = JSON.parse(data)
+          resultDic = dataJson.alipay_trade_app_pay_response;
         }
-        if (resultDic.resultStatus == '9000') {
+
+        if (resultDic.resultStatus == '9000' || resultDic.code == '10000') {
           //支付成功
-          // console.log('resolve=');
           resolve(resultDic)
         } else {
           //支付失败
-          // console.log('reject=');
           reject(resultDic)
         }
       }).catch((err) => {
-        // console.log('err=' + err);
-        // this.refs.toast.show('支付失败');
         reject(err)
       });
     })
