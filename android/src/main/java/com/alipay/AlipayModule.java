@@ -94,30 +94,30 @@ public class AlipayModule extends ReactContextBaseJavaModule {
                     String resultInfo = payResult.getResult();// 同步返回需要验证的信息
                     String resultStatus = payResult.getResultStatus();
                     // 判断resultStatus 为9000则代表支付成功
-                    if (TextUtils.equals(resultStatus, "9000")) {
-                        // 该笔订单是否真实支付成功，需要依赖服务端的异步通知。
-                        showAlert(getCurrentActivity(), "Payment success:" + payResult);
-                    } else {
-                        // 该笔订单真实的支付结果，需要依赖服务端的异步通知。
-                        showAlert(getCurrentActivity(), "Payment failed:" + payResult);
-                    }
+//                    if (TextUtils.equals(resultStatus, "9000")) {
+//                        // 该笔订单是否真实支付成功，需要依赖服务端的异步通知。
+//                        showAlert(getCurrentActivity(), "Payment success:" + payResult);
+//                    } else {
+//                        // 该笔订单真实的支付结果，需要依赖服务端的异步通知。
+////                        showAlert(getCurrentActivity(), "Payment failed:" + payResult);
+//                    }
                     break;
                 }
                 case SDK_AUTH_FLAG: {
-                    @SuppressWarnings("unchecked")
-                    AuthResult authResult = new AuthResult((Map<String, String>) msg.obj, true);
-                    String resultStatus = authResult.getResultStatus();
-
-                    // 判断resultStatus 为“9000”且result_code
-                    // 为“200”则代表授权成功，具体状态码代表含义可参考授权接口文档
-                    if (TextUtils.equals(resultStatus, "9000") && TextUtils.equals(authResult.getResultCode(), "200")) {
-                        // 获取alipay_open_id，调支付时作为参数extern_token 的value
-                        // 传入，则支付账户为该授权账户
-                        showAlert(getCurrentActivity(), "Authentication success:" + authResult);
-                    } else {
-                        // 其他状态值则为授权失败
-                        showAlert(getCurrentActivity(), "Authentication failed:" + authResult);
-                    }
+//                    @SuppressWarnings("unchecked")
+//                    AuthResult authResult = new AuthResult((Map<String, String>) msg.obj, true);
+//                    String resultStatus = authResult.getResultStatus();
+//
+//                    // 判断resultStatus 为“9000”且result_code
+//                    // 为“200”则代表授权成功，具体状态码代表含义可参考授权接口文档
+//                    if (TextUtils.equals(resultStatus, "9000") && TextUtils.equals(authResult.getResultCode(), "200")) {
+//                        // 获取alipay_open_id，调支付时作为参数extern_token 的value
+//                        // 传入，则支付账户为该授权账户
+//                        showAlert(getCurrentActivity(), "Authentication success:" + authResult);
+//                    } else {
+//                        // 其他状态值则为授权失败
+//                        showAlert(getCurrentActivity(), "Authentication failed:" + authResult);
+//                    }
                     break;
                 }
                 default:
@@ -140,10 +140,16 @@ public class AlipayModule extends ReactContextBaseJavaModule {
                     msg.what = SDK_PAY_FLAG;
                     msg.obj = result;
                     mHandler.sendMessage(msg);
-                    if(Integer.valueOf(result.get("resultStatus")) >= 8000){
-                        promise.resolve(result);
-                    }else{
-                        promise.reject(result.get("result"));
+
+                    PayResult payResult = new PayResult(result);
+                    String resultInfo = payResult.getResult();// 同步返回需要验证的信息
+                    String resultStatus = payResult.getResultStatus();
+
+                    // 判断resultStatus 为9000则代表支付成功
+                    if (TextUtils.equals(resultStatus, "9000")) {
+                        promise.resolve(resultInfo);
+                    } else {
+                        promise.reject(resultInfo);
                     }
                 }catch(Exception e){
                     promise.reject(e);
@@ -158,30 +164,6 @@ public class AlipayModule extends ReactContextBaseJavaModule {
         payThread.start();
     }
 
-    /**
-     * 支付宝账户授权业务示例
-     */
-    public void auth(final String authInfo) {
-        Runnable authRunnable = new Runnable() {
-
-            @Override
-            public void run() {
-                // 构造AuthTask 对象
-                AuthTask authTask = new AuthTask(getCurrentActivity());
-                // 调用授权接口，获取授权结果
-                Map<String, String> result = authTask.authV2(authInfo, true);
-
-                Message msg = new Message();
-                msg.what = SDK_AUTH_FLAG;
-                msg.obj = result;
-                mHandler.sendMessage(msg);
-            }
-        };
-
-        // 必须异步调用
-        Thread authThread = new Thread(authRunnable);
-        authThread.start();
-    }
     private static void showAlert(Context ctx, String info) {
         showAlert(ctx, info, null);
     }
@@ -190,7 +172,7 @@ public class AlipayModule extends ReactContextBaseJavaModule {
         new AlertDialog.Builder(ctx)
                 .setMessage(info)
                 .setPositiveButton("Confirm", null)
-                .setOnDismissListener(onDismiss)
+//                .setOnDismissListener(onDismiss)
                 .show();
     }
 
