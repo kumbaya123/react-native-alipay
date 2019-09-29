@@ -10,6 +10,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.alipay.sdk.app.EnvUtils;
+
 import com.alipay.sdk.app.PayTask;
 import com.alipay.sdk.app.AuthTask;
 import com.facebook.react.bridge.Promise;
@@ -57,6 +59,14 @@ public class AlipayModule extends ReactContextBaseJavaModule {
     public AlipayModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
+    }
+//    public static void sesetEnvt(){
+//        EnvUtils.setEnv(EnvUtils.EnvEnum.SANDBOX);
+//    }
+
+    public static void setEnv() {
+        EnvUtils.setEnv(EnvUtils.EnvEnum.SANDBOX);
+
     }
 
     @Override
