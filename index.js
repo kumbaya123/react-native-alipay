@@ -19,17 +19,17 @@ export default class AlipayModule {
         }
         if (resultDic.resultStatus == '9000') {
           //支付成功
-          console.log('resolve=');
+          // console.log('resolve=');
           resolve(resultDic)
         } else {
           //支付失败
-          console.log('reject=');
+          // console.log('reject=');
           reject(resultDic)
         }
       }).catch((err) => {
-        console.log('err=' + err);
-        this.refs.toast.show('支付失败');
-        reject(resultDic)
+        // console.log('err=' + err);
+        // this.refs.toast.show('支付失败');
+        reject(err)
       });
     })
 
