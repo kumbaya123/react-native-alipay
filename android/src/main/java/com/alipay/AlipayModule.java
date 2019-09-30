@@ -142,18 +142,10 @@ public class AlipayModule extends ReactContextBaseJavaModule {
                     mHandler.sendMessage(msg);
 
                     PayResult payResult = new PayResult(result);
-                    String resultInfo = payResult.getResult();// 同步返回需要验证的信息
-                    String resultStatus = payResult.getResultStatus();
 
-                    // 判断resultStatus 为9000则代表支付成功
-                    if (TextUtils.equals(resultStatus, "9000")) {
-                        promise.resolve(resultInfo);
-                    } else {
-                        promise.reject(result.toString());
-                    }
+                    promise.resolve(payResult.toString());
                 }catch(Exception e){
                     promise.reject(e);
-
                 }
 
             }
