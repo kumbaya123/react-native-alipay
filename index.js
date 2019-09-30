@@ -21,7 +21,7 @@ export default class AlipayModule {
         } else {
           let dataJson = JSON.parse(data)
           resultDic.resultStatus = dataJson.resultStatus
-          resultDic.content = dataJson.result ? dataJson.result : dataJson.memo
+          resultDic.content = dataJson.result ? JSON.stringify(dataJson.result) : dataJson.memo
         }
         
         resolve(resultDic)
