@@ -22,6 +22,12 @@
 
 `pod 'AlipaySDK-iOS'`
 
+##### 设置URL Schemes 
+
+URL Schemes设置为alipay开头的字符串，格式为：alipayxxxx
+
+如果调不起支付页面，LSApplicationQueriesSchemes添加alipay
+
 ##### 配置返回 url 处理方法
 
 AppDelegate.m 文件中，增加引用代码：
@@ -40,6 +46,7 @@ AppDelegate.m 文件中，增加引用代码：
         //跳转支付宝钱包进行支付，处理支付结果
         [[AlipaySDK defaultService] processOrderWithPaymentResult:url standbyCallback:^(NSDictionary *resultDic) {
             NSLog(@"result = %@",resultDic);
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"alipayResult" object:self userInfo:resultDic];
         }];
     }
     return YES;
@@ -51,6 +58,7 @@ AppDelegate.m 文件中，增加引用代码：
         //跳转支付宝钱包进行支付，处理支付结果
         [[AlipaySDK defaultService] processOrderWithPaymentResult:url standbyCallback:^(NSDictionary *resultDic) {
             NSLog(@"result = %@",resultDic);
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"alipayResult" object:self userInfo:resultDic];
         }];
     }
     return YES;
