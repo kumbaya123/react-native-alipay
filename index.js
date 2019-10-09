@@ -1,7 +1,12 @@
-import { NativeModules, Platform } from 'react-native';
-// import { resolve } from 'dns';
+import { NativeModules, DeviceEventEmitter, Platform } from 'react-native';
+import { EventEmitter } from 'events';
 
 const AlipayModul = NativeModules.AlipayModule;
+
+const emitter = new EventEmitter();
+DeviceEventEmitter.addListener('Alipay_Resp', resp => {
+  emitter.emit('Alipay.Resp', resp);
+});
 
 export default class AlipayModule {
   static aliPayAction(payStr) {
@@ -12,31 +17,29 @@ export default class AlipayModule {
           resultStatus: 0,
           content: null,
         };
-        // console.log('data = ', data)
-        /*笔者iOS端和安卓端返回的支付回调结果数据不一致，可能和支付宝sdk版本有关，
-        读者可自行根据返回数据进行相关处理，iOS(RCTAlipay.m)和安卓(AlipayModule)
-        可自行选择需要resolve回调判断处理的数据，如只返回resultStatus*/
         if (Platform.OS === 'ios') {
-          resultDic.content = data[0];
+          reject(resultDic)
         } else {
           let dataJson = JSON.parse(data)
           resultDic.resultStatus = dataJson.resultStatus
-          resultDic.content = dataJson.result ? dataJson.result : dataJson.memo
+          resultDic.content = dataJson.result ? JSON.stringify(dataJson.result) : dataJson.memo
+          resolve(resultDic)
         }
-        
-        resolve(resultDic)
-        // if (resultDic.resultStatus == '9000') {
-        //   //支付成功
-        //   resolve(resultDic)
-        // } else {
-        //   //支付失败
-        //   reject(resultDic)
-        // }
+        // resolve(resultDic)
       }).catch((err) => {
         // console.log('err-index = ', err)
         reject(err)
       });
+      // iOS 监听支付返回结果
+      emitter.once('Alipay.Resp', resp => {
+        let resultDic = {
+          resultStatus: 0,
+          content: null,
+        };
+        resultDic.resultStatus = resp.resultStatus
+        resultDic.content = resp.result ? resp.result : resp.memo
+        resolve(resultDic)
+      });
     })
-
   }
 };
