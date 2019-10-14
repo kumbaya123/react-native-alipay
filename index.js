@@ -18,20 +18,32 @@ export default class AlipayModule {
         可自行选择需要resolve回调判断处理的数据，如只返回resultStatus*/
         if (Platform.OS === 'ios') {
           resultDic.content = data[0];
-        } else {
+        } else if (Platform.OS === 'android') {
+
           let dataJson = JSON.parse(data)
-          resultDic.resultStatus = dataJson.resultStatus
-          resultDic.content = dataJson.result ? JSON.stringify(dataJson.result) : dataJson.memo
+          let resultStatus = dataJson.resultStatus
+          let content = ''
+
+          if (resultStatus === '9000') {
+            content = JSON.stringify(dataJson.result)
+          } else if (resultStatus === '8000' || resultStatus === '6004') {
+            content = '支付处理中，支付结果以支付宝是否扣费成功为准';
+          } else if (resultStatus === '4000') {
+            content = '订单支付失败';
+          } else if (resultStatus === '5000') {
+            content = '重复请求';
+          } else if (resultStatus === '6001') {
+            content = '用户取消';
+          } else if (resultStatus === '6002') {
+            content = '网络连接出错';
+          } else {
+            content = '其它支付错误';
+          }
+          resultDic.content = content
+
+          resolve({ resultStatus, content, data: resultDic })
         }
-        
-        resolve(resultDic)
-        // if (resultDic.resultStatus == '9000') {
-        //   //支付成功
-        //   resolve(resultDic)
-        // } else {
-        //   //支付失败
-        //   reject(resultDic)
-        // }
+
       }).catch((err) => {
         // console.log('err-index = ', err)
         reject(err)
