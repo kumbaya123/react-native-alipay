@@ -19,7 +19,8 @@ export default class AlipayModule {
         };
         if (Platform.OS === 'ios') {
           reject(resultDic)
-        } else {
+        } else if (Platform.OS === 'android') {
+
           let dataJson = JSON.parse(data)
           let resultStatus = dataJson.resultStatus
           let content = ''
@@ -43,7 +44,6 @@ export default class AlipayModule {
 
           resolve({ resultStatus, content, data: resultDic })
         }
-        // resolve(resultDic)
       }).catch((err) => {
         // console.log('err-index = ', err)
         reject(err)
