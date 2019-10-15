@@ -1,7 +1,12 @@
-import { NativeModules, Platform } from 'react-native';
-// import { resolve } from 'dns';
+import { NativeModules, DeviceEventEmitter, Platform } from 'react-native';
+import { EventEmitter } from 'events';
 
 const AlipayModul = NativeModules.AlipayModule;
+
+const emitter = new EventEmitter();
+DeviceEventEmitter.addListener('Alipay_Resp', resp => {
+  emitter.emit('Alipay.Resp', resp);
+});
 
 export default class AlipayModule {
   static aliPayAction(payStr) {
@@ -12,12 +17,8 @@ export default class AlipayModule {
           resultStatus: 0,
           content: null,
         };
-        // console.log('data = ', data)
-        /*笔者iOS端和安卓端返回的支付回调结果数据不一致，可能和支付宝sdk版本有关，
-        读者可自行根据返回数据进行相关处理，iOS(RCTAlipay.m)和安卓(AlipayModule)
-        可自行选择需要resolve回调判断处理的数据，如只返回resultStatus*/
         if (Platform.OS === 'ios') {
-          resultDic.content = data[0];
+          reject(resultDic)
         } else if (Platform.OS === 'android') {
 
           let dataJson = JSON.parse(data)
@@ -43,12 +44,38 @@ export default class AlipayModule {
 
           resolve({ resultStatus, content, data: resultDic })
         }
-
       }).catch((err) => {
         // console.log('err-index = ', err)
         reject(err)
       });
+      if (Platform.OS === 'ios')
+        // iOS 监听支付返回结果
+        emitter.once('Alipay.Resp', resp => {
+          let resultDic = {
+            resultStatus: 0,
+            content: null,
+          };
+          let resultStatus = resp.resultStatus
+          let content = ''
+          if (resultStatus === '9000') {
+            content = resp.result
+          } else if (resultStatus === '8000' || resultStatus === '6004') {
+            content = '支付处理中，支付结果以支付宝是否扣费成功为准';
+          } else if (resultStatus === '4000') {
+            content = '订单支付失败';
+          } else if (resultStatus === '5000') {
+            content = '重复请求';
+          } else if (resultStatus === '6001') {
+            content = '用户取消';
+          } else if (resultStatus === '6002') {
+            content = '网络连接出错';
+          } else {
+            content = '其它支付错误';
+          }
+          resultDic.resultStatus = resp.resultStatus
+          resultDic.content = content
+          resolve({ resultStatus, content, data: resultDic })
+        });
     })
-
   }
 };
