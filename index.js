@@ -58,7 +58,7 @@ export default class AlipayModule {
           let resultStatus = resp.resultStatus
           let content = ''
           if (resultStatus === '9000') {
-            content = resp.resul
+            content = resp.result
           } else if (resultStatus === '8000' || resultStatus === '6004') {
             content = '支付处理中，支付结果以支付宝是否扣费成功为准';
           } else if (resultStatus === '4000') {
